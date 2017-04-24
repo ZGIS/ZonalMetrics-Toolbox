@@ -123,26 +123,25 @@ class MetricsCalcTool(object):
         self._temp_layer_nb = 1
 
     def getParameterInfo(self):
+
         inputArea = arcpy.Parameter(
             displayName="Input layer",
             name="in_area",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
         statLayer = arcpy.Parameter(
             displayName="Statistical layer",
             name="stat_layer",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
         out = arcpy.Parameter(
             displayName="Output Feature",
             name="out_feature",
-            datatype="Feature Class",
+            datatype="DEFeatureClass",
             parameterType="Derived",
             direction="Output")
 
@@ -160,7 +159,7 @@ class MetricsCalcTool(object):
         classList = arcpy.Parameter(
             displayName="Classes",
             name="class_list",
-            datatype="String",
+            datatype="GPString",
             parameterType="Optional",
             direction="Input",
             multiValue=True)
@@ -291,8 +290,7 @@ class MetricsGrouping(MetricsCalcTool):
         toolsSelection = arcpy.Parameter(
             displayName="Tools to be run",
             name="selected_tools",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
             multiValue=True)
@@ -342,7 +340,7 @@ class AbstractAreaMetricsCalcTool(MetricsCalcTool):
         area_analysis_method_param = arcpy.Parameter(
             displayName="Area analysis method",
             name="area_analysis_method",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
             multiValue=False)
@@ -653,7 +651,7 @@ class LargestPatchIndex(AbstractAreaMetricsCalcTool):
         merge_same_class_patches_param = arcpy.Parameter(
             displayName="Merge patches of the same class",
             name="merge_same_class_patches",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Required",
             direction="Input",
             multiValue=False)
@@ -885,7 +883,7 @@ class ContrastMetricsTool(MetricsCalcTool):
         analyzedClass = arcpy.Parameter(
             displayName="Analyzed class",
             name="analyzed_class",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
         )
@@ -1053,7 +1051,7 @@ class ConnectanceMetricsTool(MetricsCalcTool):
         out_connections_param = arcpy.Parameter(
             displayName="Output connections layer",
             name="out_connections",
-            datatype="Shapefile",
+            datatype="DEShapefile",
             parameterType="Optional",
             direction="Output",
         )
@@ -1469,16 +1467,14 @@ class CreateHexagons(object):
         inputArea = arcpy.Parameter(
             displayName="Input layer",
             name="in_area",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
         useExtent = arcpy.Parameter(
             displayName="Hexagon layer extent = display extent",
             name="use_extent",
-            # FIXME datatype="GPBoolean",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Required",
             direction="Input")
         useExtent.value = False
@@ -1486,8 +1482,7 @@ class CreateHexagons(object):
         clipToInput = arcpy.Parameter(
             displayName="Clip hexagon layer to input area",
             name="clip_to_input",
-            # FIXME datatype="GPBoolean",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Required",
             direction="Input")
         clipToInput.value = True
@@ -1495,7 +1490,6 @@ class CreateHexagons(object):
         hexHeight = arcpy.Parameter(
             displayName="Hexagon height",
             name="hex_height",
-            # FIXME datatype="GPBoolean",
             datatype="Double",
             parameterType="Required",
             direction="Input")
@@ -1504,22 +1498,21 @@ class CreateHexagons(object):
         outFeatureClass = arcpy.Parameter(
             displayName="Output hexagon Layer",
             name="output_layer",
-            # FIXME datatype="DEShapefile",
-            datatype="Shapefile",
+            datatype="DEShapefile",
             parameterType="Required",
             direction="Output")
 
         centerHexagons = arcpy.Parameter(
             displayName="Center hexagons",
             name="center_hexagons",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
         centerFeatureLayer = arcpy.Parameter(
             displayName="Feature layer to center",
             name="center_fc",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Optional",
             direction="Input")
 
@@ -1853,8 +1846,7 @@ class CreatePie(object):
         inputArea = arcpy.Parameter(
             displayName="Input layer",
             name="in_area",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
@@ -1871,8 +1863,7 @@ class CreatePie(object):
         outFeatureClass = arcpy.Parameter(
             displayName="Output pie layer",
             name="output_layer",
-            # FIXME datatype="DEShapefile",
-            datatype="Shapefile",
+            datatype="DEShapefile",
             parameterType="Required",
             direction="Output")
 
