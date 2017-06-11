@@ -126,16 +126,14 @@ class MetricsCalcTool(object):
         inputArea = arcpy.Parameter(
             displayName="Input layer",
             name="in_area",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
         statLayer = arcpy.Parameter(
             displayName="Statistical layer",
             name="stat_layer",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
@@ -198,6 +196,7 @@ class MetricsCalcTool(object):
         class_field_param = parameters.class_field
         class_list_param = parameters.class_list
 
+
         if class_field_param.altered:
             try:
                 fieldName = class_field_param.valueAsText
@@ -211,6 +210,7 @@ class MetricsCalcTool(object):
             except UnicodeEncodeError:
                 # will be handled in updateMessages
                 pass
+
         return
 
     def _escape(self, value):
@@ -223,6 +223,31 @@ class MetricsCalcTool(object):
         class_field_param = parameters.class_field
         field_name = class_field_param.valueAsText
         input_feature = parameters.in_area.value
+
+        zonal_param = parameters.in_area
+        stat_param = parameters.stat_layer
+
+
+        if zonal_param.value is None:
+            zonal_param.clearMessage()
+        else:
+            desc = arcpy.Describe(zonal_param.value)
+            feature_type = desc.shapeType.lower()
+            file_extension = desc.extension
+            if not feature_type == "polygon" or not file_extension == "shp":
+                zonal_param.setErrorMessage("Only polygon shapefiles allowed")
+
+        if stat_param.value is None:
+            stat_param.clearMessage()
+        else:
+            desc = arcpy.Describe(stat_param.value)
+            feature_type = desc.shapeType.lower()
+            file_extension = desc.extension
+            if not feature_type == "polygon" or not file_extension == "shp":
+                stat_param.setErrorMessage("Only polygon shapefiles allowed")
+
+
+
         self.get_all_classes(input_feature, field_name, map_func=str)
 
         if field_name:
@@ -291,8 +316,7 @@ class MetricsGrouping(MetricsCalcTool):
         toolsSelection = arcpy.Parameter(
             displayName="Tools to be run",
             name="selected_tools",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
             multiValue=True)
@@ -443,7 +467,19 @@ class AbstractAreaMetricsCalcTool(MetricsCalcTool):
 
         if self.area_analysis_method == AreaCalcMethod.CUT_TO_STAT:
             arcpy.Intersect_analysis([self.statistics_layer, input_selected], layer_to_analyse)
-            patch_stat_search_field = 'FID'
+
+##
+            arcpy.AddField_management(layer_to_analyse, 'sortFID', "LONG")
+            desc = arcpy.Describe(layer_to_analyse)
+            FIDfield = desc.OIDFieldName
+            arcpy.CalculateField_management(layer_to_analyse, 'sortFID',
+                                    "!" + FIDfield + "!",
+                                    "PYTHON_9.3")
+            patch_stat_search_field = 'sortFID'
+
+##
+            #patch_stat_search_field = 'FID'#
+
             patch_search_field = 'FID'
             stat_field = UNIT_ID_FIELD_NAME
             stat_search_layer = layer_to_analyse_sorted
@@ -488,7 +524,8 @@ class AbstractAreaMetricsCalcTool(MetricsCalcTool):
 
         log('Sorting {} by fields {}, {}'.format(layer_to_analyse, stat_field, patch_stat_search_field))
         arcpy.Sort_management(layer_to_analyse, layer_to_analyse_sorted,
-                              [[stat_field, 'ASCENDING'], [patch_stat_search_field, 'ASCENDING'], ])
+                [[stat_field, 'ASCENDING'], [patch_stat_search_field, 'ASCENDING'] ])
+
 
         on_debug(layer_to_analyse, layer_to_analyse_sorted)
         log(
@@ -514,6 +551,7 @@ class AbstractAreaMetricsCalcTool(MetricsCalcTool):
                     patch_w_clause = '{field} = {value}'.format(
                         field=arcpy.AddFieldDelimiters(stat_search_layer, stat_field),
                         value=stat_id)
+                    arcpy.AddMessage(patch_w_clause)
                     patches_ids = [str(row[1]) for row in
                                    SearchCursor(stat_search_layer, [stat_field, patch_stat_search_field],
                                                 where_clause=patch_w_clause)]
@@ -1014,8 +1052,8 @@ class ConnectanceMetricsTool(MetricsCalcTool):
         MetricsCalcTool.__init__(self)
 
         self.label = "Connectance Metrics"
-        self.description = '''Calculates a Connectance Index and Connection area layer within a given distance between selected classes. 
-        The detailed explanation can be found here https://docs.google.com/drawings/d/1dQ2WId9RD5sfMeJvY63-uVbrSNz228fHe3JDkYe3-6o/edit?usp=sharing<br/> 
+        self.description = '''Calculates a Connectance Index and Connection area layer within a given distance between selected classes.
+        The detailed explanation can be found here https://docs.google.com/drawings/d/1dQ2WId9RD5sfMeJvY63-uVbrSNz228fHe3JDkYe3-6o/edit?usp=sharing<br/>
         Outputs:
 <ul>
    <li> <em>ci_np</em> - number of distinct connected patches (by FID) </li>
@@ -1469,16 +1507,14 @@ class CreateHexagons(object):
         inputArea = arcpy.Parameter(
             displayName="Input layer",
             name="in_area",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
         useExtent = arcpy.Parameter(
             displayName="Hexagon layer extent = display extent",
             name="use_extent",
-            # FIXME datatype="GPBoolean",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Required",
             direction="Input")
         useExtent.value = False
@@ -1486,8 +1522,7 @@ class CreateHexagons(object):
         clipToInput = arcpy.Parameter(
             displayName="Clip hexagon layer to input area",
             name="clip_to_input",
-            # FIXME datatype="GPBoolean",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Required",
             direction="Input")
         clipToInput.value = True
@@ -1495,8 +1530,7 @@ class CreateHexagons(object):
         hexHeight = arcpy.Parameter(
             displayName="Hexagon height",
             name="hex_height",
-            # FIXME datatype="GPBoolean",
-            datatype="Double",
+            datatype="GPDouble",
             parameterType="Required",
             direction="Input")
         hexHeight.value = 1000
@@ -1504,8 +1538,7 @@ class CreateHexagons(object):
         outFeatureClass = arcpy.Parameter(
             displayName="Output hexagon Layer",
             name="output_layer",
-            # FIXME datatype="DEShapefile",
-            datatype="Shapefile",
+            datatype="DEShapefile",
             parameterType="Required",
             direction="Output")
 
@@ -1853,8 +1886,7 @@ class CreatePie(object):
         inputArea = arcpy.Parameter(
             displayName="Input layer",
             name="in_area",
-            # FIXME datatype="GPFeatureLayer",
-            datatype="Feature Layer",
+            datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")
 
@@ -1871,8 +1903,7 @@ class CreatePie(object):
         outFeatureClass = arcpy.Parameter(
             displayName="Output pie layer",
             name="output_layer",
-            # FIXME datatype="DEShapefile",
-            datatype="Shapefile",
+            datatype="DEShapefile",
             parameterType="Required",
             direction="Output")
 
