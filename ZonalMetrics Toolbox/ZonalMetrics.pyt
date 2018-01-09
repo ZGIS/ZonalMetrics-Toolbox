@@ -1,4 +1,4 @@
-﻿# coding=utf-8
+# coding=utf-8
 import math
 from collections import Counter, OrderedDict
 import random
@@ -140,7 +140,7 @@ class MetricsCalcTool(object):
         out = arcpy.Parameter(
             displayName="Output Feature",
             name="out_feature",
-            datatype="Feature Class",
+            datatype="DEFeatureClass",
             parameterType="Derived",
             direction="Output")
 
@@ -1552,7 +1552,7 @@ class CreateHexagons(object):
         centerFeatureLayer = arcpy.Parameter(
             displayName="Feature layer to center",
             name="center_fc",
-            datatype="Feature Layer",
+            datatype=""GPFeatureLayer",
             parameterType="Optional",
             direction="Input")
 
