@@ -158,7 +158,7 @@ class MetricsCalcTool(object):
         classList = arcpy.Parameter(
             displayName="Classes",
             name="class_list",
-            datatype="String",
+            datatype="GPString",
             parameterType="Optional",
             direction="Input",
             multiValue=True)
@@ -366,7 +366,7 @@ class AbstractAreaMetricsCalcTool(MetricsCalcTool):
         area_analysis_method_param = arcpy.Parameter(
             displayName="Area analysis method",
             name="area_analysis_method",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
             multiValue=False)
@@ -691,7 +691,7 @@ class LargestPatchIndex(AbstractAreaMetricsCalcTool):
         merge_same_class_patches_param = arcpy.Parameter(
             displayName="Merge patches of the same class",
             name="merge_same_class_patches",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Required",
             direction="Input",
             multiValue=False)
@@ -834,7 +834,7 @@ class EdgeMetricsTool(MetricsCalcTool):
     density_area = arcpy.Parameter(
         displayName="Edge Density calculation area (ha)",
         name="density_area",
-        datatype="Long",
+        datatype="GPLong",
         parameterType="Required",
         direction="Input")
     density_area.value = 1000
@@ -923,7 +923,7 @@ class ContrastMetricsTool(MetricsCalcTool):
         analyzedClass = arcpy.Parameter(
             displayName="Analyzed class",
             name="analyzed_class",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
         )
@@ -1072,7 +1072,7 @@ class ConnectanceMetricsTool(MetricsCalcTool):
         max_distance = arcpy.Parameter(
             displayName="Maximum connection distance (map units)",
             name="conn_distance",
-            datatype="Double",
+            datatype="GPDouble",
             parameterType="Required",
             direction="Input",
         )
@@ -1081,7 +1081,7 @@ class ConnectanceMetricsTool(MetricsCalcTool):
         max_allowable_distance_param = arcpy.Parameter(
             displayName="Maximum Allowable Offset (feature units)",
             name="max_allowable_distance",
-            datatype="Long",
+            datatype="GPLong",
             parameterType="Required",
             direction="Input",
         )
@@ -1091,7 +1091,7 @@ class ConnectanceMetricsTool(MetricsCalcTool):
         out_connections_param = arcpy.Parameter(
             displayName="Output connections layer",
             name="out_connections",
-            datatype="Shapefile",
+            datatype="DEShapefile",
             parameterType="Optional",
             direction="Output",
         )
@@ -1545,7 +1545,7 @@ class CreateHexagons(object):
         centerHexagons = arcpy.Parameter(
             displayName="Center hexagons",
             name="center_hexagons",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
 
@@ -1894,7 +1894,7 @@ class CreatePie(object):
         sections_number = arcpy.Parameter(
             displayName="Number of sections",
             name="sections_number",
-            datatype="Long",
+            datatype="GPLong",
             parameterType="Required",
             direction="Input")
         sections_number.value = 8
