@@ -1552,7 +1552,7 @@ class CreateHexagons(object):
         centerFeatureLayer = arcpy.Parameter(
             displayName="Feature layer to center",
             name="center_fc",
-            datatype=""GPFeatureLayer",
+            datatype="GPFeatureLayer",
             parameterType="Optional",
             direction="Input")
 
